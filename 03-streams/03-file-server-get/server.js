@@ -15,13 +15,7 @@ server.on('request', (req, res) => {
     case 'GET': {
       const stream = fs.createReadStream(filepath);
 
-      stream.on('data', chunk => {
-        res.write(chunk);
-      });
-
-      stream.on('end', () => {
-        stream.pipe(res);
-      });
+      stream.pipe(res);
 
       stream.on('error', (err) => {
         if (pathname.indexOf('/') !== -1) {
