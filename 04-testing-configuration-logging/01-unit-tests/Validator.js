@@ -17,6 +17,11 @@ module.exports = class Validator {
         return errors;
       }
 
+      if (type === 'number' && isNaN(value)) {
+        errors.push({field, error: `expect ${rules.type}, got NaN`});
+        return errors;
+      }
+
       switch (type) {
         case 'string':
           if (value.length < rules.min) {
@@ -31,7 +36,7 @@ module.exports = class Validator {
             errors.push({field, error: `too little, expect ${rules.min}, got ${value}`});
           }
           if (value > rules.max) {
-            errors.push({field, error: `too big, expect ${rules.min}, got ${value}`});
+            errors.push({field, error: `too big, expect ${rules.max}, got ${value}`});
           }
           break;
       }
