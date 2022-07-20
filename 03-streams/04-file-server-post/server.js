@@ -23,8 +23,6 @@ server.on('request', (req, res) => {
 
 
   switch (req.method) {
-
-
     case 'POST':
       if (!filepath) {
         res.statusCode = 404;
@@ -37,8 +35,7 @@ server.on('request', (req, res) => {
       break;
     }
 
-
-    default:
+    case default:
       res.statusCode = 501;
       res.end('Not implemented');
   }
