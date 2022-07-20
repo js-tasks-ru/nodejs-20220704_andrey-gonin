@@ -5,50 +5,34 @@ const fs = require('fs');
 
 const LimitSizeStream = require('./LimitSizeStream');
 
+const receiveFile = require('./receiveFile');
+
 const server = new http.Server();
 
 server.on('request', (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname.slice(1);
 
+  if (pathname.includes('/') || pathname.includes('..')) {
+    res.statusCode = 400;
+    res.end('Nested paths are not allowed');
+    return;
+  }
+
   const filepath = path.join(__dirname, 'files', pathname);
 
 
   switch (req.method) {
-    case 'POST': {
 
-      if (fs.existsSync(filepath)) {
-        res.statusCode = 409;
-        res.end();
+
+    case 'POST':
+      if (!filepath) {
+        res.statusCode = 404;
+        res.end('File not found');
         return;
       }
 
-      if (pathname.indexOf('/') !== -1) {
-        res.statusCode = 400;
-        res.end();
-        return;
-      }
-
-      const limitedStream = new LimitSizeStream({limit: 10000, encoding: 'utf-8'});
-
-      const stream = fs.createReadStream(filepath)
-        .pipe(req)
-        .pipe(limitedStream);
-
-      stream.on('error', err => {
-        res.statusCode = 413;
-        res.end();
-      });
-
-      fs.writeFile(filepath, stream.toString(), (err) => {
-        if (err) {
-          console.log('err', err);
-        }
-
-        res.statusCode = 201;
-        res.end();
-      });
-
+      receiveFile(filepath, req, res);
 
       break;
     }
