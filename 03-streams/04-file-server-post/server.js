@@ -33,9 +33,8 @@ server.on('request', (req, res) => {
       receiveFile(filepath, req, res);
 
       break;
-    }
-
-    case default:
+      
+    default:
       res.statusCode = 501;
       res.end('Not implemented');
   }
