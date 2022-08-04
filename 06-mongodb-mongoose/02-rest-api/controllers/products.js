@@ -1,5 +1,5 @@
 const Product = require('./../models/Product');
-const {mapProduct} = require('./../mappers/product');
+const mapProduct = require('./../mappers/product');
 const mongoose = require('mongoose');
 
 module.exports.productsBySubcategory = async function productsBySubcategory(ctx, next) {
